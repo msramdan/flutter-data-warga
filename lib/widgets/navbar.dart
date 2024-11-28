@@ -1,7 +1,8 @@
-// lib/widgets/navbar.dart
 import 'package:flutter/material.dart';
 import '../services/auth_service.dart'; // Import the AuthService
 import '../screens/login_screen.dart'; // Import the LoginScreen for navigation
+import '../screens/aduan_warga_screen.dart'; // Import your other screen
+import '../screens/kegiatan_screen.dart'; // Import KegiatanScreen or other screens
 
 class Navbar extends StatelessWidget {
   final int selectedIndex;
@@ -22,8 +23,8 @@ class Navbar extends StatelessWidget {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text("Logout successful")),
             );
-            // Redirect to login screen
-            Navigator.pushReplacement(
+            // Redirect to login screen without replacing the stack
+            Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => LoginScreen()),
             );
@@ -32,6 +33,18 @@ class Navbar extends StatelessWidget {
               SnackBar(content: Text("Logout failed. Please try again.")),
             );
           }
+        } else if (index == 1) {
+          // Navigate to Aduan Warga screen
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => AduanWargaScreen()),
+          );
+        } else if (index == 2) {
+          // Navigate to Kegiatan screen
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => KegiatanScreen()),
+          );
         } else {
           // Call the onItemTapped function for other tabs
           onItemTapped(index);

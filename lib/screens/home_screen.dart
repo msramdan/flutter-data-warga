@@ -1,7 +1,8 @@
-// lib/screens/home_screen.dart
 import 'package:flutter/material.dart';
-import '../widgets/navbar.dart'; // Navbar untuk bottom navigation
-import '../widgets/header.dart'; // Header yang sudah dibuat
+import '../widgets/navbar.dart'; // Navbar for bottom navigation
+import '../widgets/header.dart'; // Header widget
+import '../screens/aduan_warga_screen.dart'; // Aduan Warga screen
+import '../screens/kegiatan_screen.dart'; // Kegiatan screen
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -21,12 +22,12 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(0), // Menghilangkan AppBar
+        preferredSize: Size.fromHeight(0), // Hide the AppBar
         child: Container(),
       ),
       body: Column(
         children: [
-          Header(), // Menambahkan Header
+          Header(), // Add Header widget
           Expanded(
             child: Center(
               child: Text("Daftar Kegiatan akan ditampilkan di sini"),
