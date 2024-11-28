@@ -5,7 +5,7 @@ class KegiatanScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Kegiatan"),
+        title: Text("Kegiatan Wa"),
       ),
       body: Center(
         child: Text("Daftar Kegiatan akan ditampilkan di sini"),

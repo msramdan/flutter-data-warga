@@ -6,7 +6,7 @@ import '../helpers/api_helper.dart';
 
 class AuthService {
   // Fungsi login
-  Future<void> login(String nik, String password) async {
+  Future<String> login(String nik, String password) async {
     if (nik.isEmpty || password.isEmpty) {
       throw Exception('Nik dan Password harus diisi');
     }
@@ -31,6 +31,37 @@ class AuthService {
       }
     } catch (e) {
       throw Exception('Terjadi kesalahan: $e');
+    }
+  }
+
+  // Fungsi logout
+  Future<bool> logout() async {
+    try {
+      // Ambil token dari SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token');
+      
+      if (token == null) {
+        return false; // Jika token tidak ditemukan, logout gagal
+      }
+
+      // Kirim permintaan logout ke API
+      final response = await http.post(
+        Uri.parse(ApiHelper.getUrl("logout")), // URL logout dari API
+        headers: {
+          'Authorization': 'Bearer $token', // Menambahkan token di header
+        },
+      );
+
+      if (response.statusCode == 200) {
+        // Jika logout berhasil, hapus token dari SharedPreferences
+        await prefs.remove('token');
+        return true; // Berhasil logout
+      } else {
+        return false; // Jika logout gagal
+      }
+    } catch (e) {
+      throw Exception('Terjadi kesalahan saat logout: $e');
     }
   }
 }
