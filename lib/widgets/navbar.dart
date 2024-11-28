@@ -3,6 +3,7 @@ import '../services/auth_service.dart'; // Import the AuthService
 import '../screens/login_screen.dart'; // Import the LoginScreen for navigation
 import '../screens/aduan_warga_screen.dart'; // Import your other screen
 import '../screens/kegiatan_screen.dart'; // Import KegiatanScreen or other screens
+import '../screens/home_screen.dart'; // Import KegiatanScreen or other screens
 
 class Navbar extends StatelessWidget {
   final int selectedIndex;
@@ -18,7 +19,7 @@ class Navbar extends StatelessWidget {
         // Check if the tapped item is the logout item (index 3)
         if (index == 3) {
           bool success = await AuthService().logout();
-          
+
           if (success) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text("Logout successful")),
@@ -47,12 +48,17 @@ class Navbar extends StatelessWidget {
           );
         } else {
           // Call the onItemTapped function for other tabs
-          onItemTapped(index);
+          // onItemTapped(index);
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => HomeScreen()),
+          );
         }
       },
       backgroundColor: Colors.blue, // Navbar background color
       selectedItemColor: Colors.white, // Color for selected item
-      unselectedItemColor: Colors.white.withOpacity(0.6), // Color for unselected items
+      unselectedItemColor:
+          Colors.white.withOpacity(0.6), // Color for unselected items
       type: BottomNavigationBarType.fixed,
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(

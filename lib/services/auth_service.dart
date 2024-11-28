@@ -23,8 +23,14 @@ class AuthService {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         final prefs = await SharedPreferences.getInstance();
+
+        // Store individual fields
         prefs.setString('token', data['data']['token']);
         prefs.setString('userName', data['data']['warga']['nama']);
+
+        // Store the entire 'warga' object as a JSON string
+        prefs.setString('detailWarga', json.encode(data['data']['warga']));
+
         return data['data']['token']; // Mengembalikan token
       } else {
         final data = json.decode(response.body);
