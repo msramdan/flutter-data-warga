@@ -1,5 +1,7 @@
+// lib/screens/home_screen.dart
 import 'package:flutter/material.dart';
 import '../widgets/navbar.dart'; // Navbar untuk bottom navigation
+import '../widgets/header.dart'; // Header yang sudah dibuat
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -18,20 +20,19 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Home'),
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(0), // Menghilangkan AppBar
+        child: Container(),
       ),
-      body: Center(
-        child: Text(
-          _selectedIndex == 0
-              ? 'Selamat datang di halaman Home!'
-              : _selectedIndex == 1
-                  ? 'Aduan Warga'
-                  : _selectedIndex == 2
-                      ? 'Kegiatan'
-                      : 'Logout',
-          style: TextStyle(fontSize: 20),
-        ),
+      body: Column(
+        children: [
+          Header(), // Menambahkan Header
+          Expanded(
+            child: Center(
+              child: Text("Daftar Kegiatan akan ditampilkan di sini"),
+            ),
+          ),
+        ],
       ),
       bottomNavigationBar: Navbar(
         selectedIndex: _selectedIndex,

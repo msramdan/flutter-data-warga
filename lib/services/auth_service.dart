@@ -24,7 +24,8 @@ class AuthService {
         final data = json.decode(response.body);
         final prefs = await SharedPreferences.getInstance();
         prefs.setString('token', data['data']['token']);
-        return data['data']['token'];  // Mengembalikan token
+        prefs.setString('userName', data['data']['warga']['nama']);
+        return data['data']['token']; // Mengembalikan token
       } else {
         final data = json.decode(response.body);
         throw Exception(data['message'] ?? 'Terjadi kesalahan, coba lagi.');
@@ -34,13 +35,18 @@ class AuthService {
     }
   }
 
+  Future<String> getUserName() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('userName') ?? 'Unknown User';
+  }
+
   // Fungsi logout
   Future<bool> logout() async {
     try {
       // Ambil token dari SharedPreferences
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('token');
-      
+
       if (token == null) {
         return false; // Jika token tidak ditemukan, logout gagal
       }

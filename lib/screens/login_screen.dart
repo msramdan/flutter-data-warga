@@ -32,10 +32,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
     try {
       final token = await _authService.login(nik, password);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text("Login berhasil!"),
-      ));
-      // Arahkan ke halaman Home setelah login berhasil
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => HomeScreen()),
@@ -57,7 +53,8 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Card(
             elevation: 5.0, // Memberikan efek bayangan
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16.0), // Membuat sudut card melengkung
+              borderRadius:
+                  BorderRadius.circular(16.0), // Membuat sudut card melengkung
             ),
             child: Padding(
               padding: const EdgeInsets.all(20.0),
@@ -94,7 +91,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   SizedBox(height: 10),
                   // Row untuk checkbox "Show Password"
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.start, // Untuk meratakan ke kiri
+                    mainAxisAlignment:
+                        MainAxisAlignment.start, // Untuk meratakan ke kiri
                     children: [
                       Checkbox(
                         value: _showPassword,
@@ -113,17 +111,22 @@ class _LoginScreenState extends State<LoginScreen> {
                   ElevatedButton(
                     onPressed: login,
                     style: ElevatedButton.styleFrom(
-                      minimumSize: Size(double.infinity, 50), // Tombol penuh lebar
-                      backgroundColor: Colors.blue, // Set warna latar belakang biru
-                      foregroundColor: Colors.white, // Set warna teks menjadi putih
+                      minimumSize:
+                          Size(double.infinity, 50), // Tombol penuh lebar
+                      backgroundColor:
+                          Colors.blue, // Set warna latar belakang biru
+                      foregroundColor:
+                          Colors.white, // Set warna teks menjadi putih
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10), // Sudut tombol melengkung
+                        borderRadius: BorderRadius.circular(
+                            10), // Sudut tombol melengkung
                       ),
                     ),
                     child: Text(
                       "Login",
                       style: TextStyle(
-                        fontWeight: FontWeight.bold, // Membuat teks menjadi bold
+                        fontWeight:
+                            FontWeight.bold, // Membuat teks menjadi bold
                       ),
                     ),
                   ),
@@ -136,7 +139,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => RegisterScreen(), // Ganti dengan layar register
+                          builder: (context) =>
+                              RegisterScreen(), // Ganti dengan layar register
                         ),
                       );
                     },
