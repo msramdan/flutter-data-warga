@@ -4,6 +4,7 @@ import '../widgets/navbar.dart'; // Navbar for bottom navigation
 import '../widgets/header.dart'; // Header widget
 import '../services/aduan_service.dart'; // Import the AduanService
 import 'package:flutter_spinkit/flutter_spinkit.dart'; // Optional loading spinner
+import 'aduan_form_screen.dart'; // Import the Aduan Form Screen
 
 class AduanWargaScreen extends StatefulWidget {
   @override
@@ -74,6 +75,14 @@ class _AduanWargaScreenState extends State<AduanWargaScreen> {
     setState(() {
       _selectedIndex = index;
     });
+  }
+
+  // Navigate to the aduan form screen
+  void _navigateToForm() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => AduanFormScreen()),
+    );
   }
 
   @override
@@ -177,6 +186,11 @@ class _AduanWargaScreenState extends State<AduanWargaScreen> {
       bottomNavigationBar: Navbar(
         selectedIndex: _selectedIndex,
         onItemTapped: _onItemTapped,
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _navigateToForm,
+        backgroundColor: Colors.blue,
+        child: Icon(Icons.add),
       ),
     );
   }
