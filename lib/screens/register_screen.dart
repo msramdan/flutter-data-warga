@@ -87,6 +87,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
       return;
     }
 
+    // Add password length validation (minimum 6 characters)
+    if (password.length < 6) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Password harus memiliki minimal 6 karakter"),
+      ));
+      return;
+    }
+
     try {
       final response = await http.post(
         Uri.parse(ApiHelper.getUrl("register")),
@@ -109,7 +117,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text("Registrasi berhasil!"),
+          content: Text("Registrasi berhasil! Menunggu verifikasi Ketua RT"),
         ));
 
         Navigator.pushAndRemoveUntil(
@@ -342,9 +350,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: register,
-                    child: Text("Daftar"),
                     style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(vertical: 12),
+                      minimumSize:
+                          Size(double.infinity, 50), // Tombol penuh lebar
+                      backgroundColor:
+                          Colors.blue, // Set warna latar belakang biru
+                      foregroundColor:
+                          Colors.white, // Set warna teks menjadi putih
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
+                            10), // Sudut tombol melengkung
+                      ),
+                    ),
+                    child: Text(
+                      "Daftar",
+                      style: TextStyle(
+                        fontWeight:
+                            FontWeight.bold, // Membuat teks menjadi bold
+                      ),
                     ),
                   ),
                 ],
