@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:image_picker/image_picker.dart'; // Untuk memilih file
-import 'dart:io'; // Untuk bekerja dengan file (gambar / pdf)
 import '../helpers/api_helper.dart';
 import 'login_screen.dart'; // Mengimpor halaman login setelah registrasi berhasil
 
@@ -21,14 +19,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController =
       TextEditingController();
-  final ImagePicker _picker = ImagePicker();
-  XFile? _image; // File gambar kartu keluarga
+  final TextEditingController tanggalLahirController =
+      TextEditingController(); // Controller for Tanggal Lahir
 
-  // Form validation
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
 
-  // Dropdown values for enums
   final List<String> agamaList = [
     'Islam',
     'Kristen Protestan',
@@ -50,19 +46,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   String? _selectedGender;
   String? _selectedStatusKawin;
   String? _selectedGolonganDarah;
+  DateTime? _selectedTanggalLahir; // Store the selected date
 
-  // Fungsi untuk memilih file kartu keluarga
-  Future<void> _pickFile() async {
-    final XFile? pickedFile =
-        await _picker.pickImage(source: ImageSource.gallery); // Untuk gambar
-    if (pickedFile != null) {
-      setState(() {
-        _image = pickedFile;
-      });
-    }
-  }
-
-  // Fungsi untuk melakukan registrasi
   Future<void> register() async {
     final nama = namaController.text;
     final nik = nikController.text;
@@ -72,6 +57,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final alamat = alamatController.text;
     final password = passwordController.text;
     final confirmPassword = confirmPasswordController.text;
+    final tanggalLahir = _selectedTanggalLahir != null
+        ? _selectedTanggalLahir!.toIso8601String()
+        : ''; // Convert DateTime to String if not null
 
     if (nama.isEmpty ||
         nik.isEmpty ||
@@ -85,7 +73,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         _selectedGender == null ||
         _selectedStatusKawin == null ||
         _selectedGolonganDarah == null ||
-        _image == null) {
+        _selectedTanggalLahir == null) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text("Semua field harus diisi"),
       ));
@@ -100,29 +88,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
 
     try {
-      final request = http.MultipartRequest(
-          'POST', Uri.parse(ApiHelper.getUrl("register")));
-      request.fields['nama'] = nama;
-      request.fields['nik'] = nik;
-      request.fields['no_kk'] = noKk;
-      request.fields['agama'] = _selectedAgama!;
-      request.fields['jenis_kelamin'] = _selectedGender!;
-      request.fields['tempat_lahir'] = tempatLahir;
-      request.fields['pekerjaan'] = pekerjaan;
-      request.fields['alamat_lengkap'] = alamat;
-      request.fields['status_kawin'] = _selectedStatusKawin!;
-      request.fields['golongan_darah'] = _selectedGolonganDarah!;
-      request.fields['password'] = password;
-
-      // Menambahkan file gambar (Kartu Keluarga)
-      request.files.add(
-          await http.MultipartFile.fromPath('kartu_keluarga', _image!.path));
-
-      final response = await request.send();
-      final responseBody = await response.stream.bytesToString();
+      final response = await http.post(
+        Uri.parse(ApiHelper.getUrl("register")),
+        body: {
+          'nama': nama,
+          'nik': nik,
+          'no_kk': noKk,
+          'agama': _selectedAgama!,
+          'jenis_kelamin': _selectedGender!,
+          'tempat_lahir': tempatLahir,
+          'pekerjaan': pekerjaan,
+          'alamat_lengkap': alamat,
+          'status_kawin': _selectedStatusKawin!,
+          'golongan_darah': _selectedGolonganDarah!,
+          'tanggal_lahir': tanggalLahir, // Include tanggal_lahir
+          'password': password,
+        },
+      );
 
       if (response.statusCode == 200) {
-        final data = json.decode(responseBody);
+        final data = json.decode(response.body);
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text("Registrasi berhasil!"),
         ));
@@ -133,7 +118,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           (route) => false,
         );
       } else {
-        final error = json.decode(responseBody);
+        final error = json.decode(response.body);
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(error['message'] ?? 'Registrasi gagal!'),
         ));
@@ -164,7 +149,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
               padding: const EdgeInsets.all(20.0),
               child: ListView(
                 children: [
-                  // Nama
                   TextField(
                     controller: namaController,
                     decoration: InputDecoration(
@@ -173,7 +157,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ),
                   SizedBox(height: 16),
-                  // NIK
                   TextField(
                     controller: nikController,
                     decoration: InputDecoration(
@@ -182,7 +165,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ),
                   SizedBox(height: 16),
-                  // Nomor KK
                   TextField(
                     controller: noKkController,
                     decoration: InputDecoration(
@@ -191,7 +173,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ),
                   SizedBox(height: 16),
-                  // Agama Dropdown
                   DropdownButtonFormField<String>(
                     value: _selectedAgama,
                     items: agamaList.map((agama) {
@@ -211,7 +192,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ),
                   SizedBox(height: 16),
-                  // Jenis Kelamin Dropdown
                   DropdownButtonFormField<String>(
                     value: _selectedGender,
                     items: genderList.map((gender) {
@@ -231,7 +211,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ),
                   SizedBox(height: 16),
-                  // Tempat Lahir
                   TextField(
                     controller: tempatLahirController,
                     decoration: InputDecoration(
@@ -240,11 +219,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ),
                   SizedBox(height: 16),
-                  // Tanggal Lahir (Date Picker)
+                  // Date Picker for Tanggal Lahir
                   TextField(
-                    controller: TextEditingController(
-                      text: 'Tanggal Lahir',
-                    ),
+                    controller: tanggalLahirController,
                     decoration: InputDecoration(
                       labelText: "Tanggal Lahir",
                       border: OutlineInputBorder(),
@@ -259,15 +236,52 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       );
                       if (pickedDate != null) {
                         setState(() {
-                          TextEditingController(
-                            text: '${pickedDate.toLocal()}'.split(' ')[0],
-                          );
+                          _selectedTanggalLahir = pickedDate;
+                          tanggalLahirController.text =
+                              '${pickedDate.toLocal()}'.split(' ')[0];
                         });
                       }
                     },
                   ),
                   SizedBox(height: 16),
-                  // Pekerjaan
+                  DropdownButtonFormField<String>(
+                    value: _selectedStatusKawin,
+                    items: statusKawinList.map((status) {
+                      return DropdownMenuItem<String>(
+                        value: status,
+                        child: Text(status),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedStatusKawin = value;
+                      });
+                    },
+                    decoration: InputDecoration(
+                      labelText: "Status Kawin",
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  SizedBox(height: 16),
+                  DropdownButtonFormField<String>(
+                    value: _selectedGolonganDarah,
+                    items: golonganDarahList.map((golongan) {
+                      return DropdownMenuItem<String>(
+                        value: golongan,
+                        child: Text(golongan),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedGolonganDarah = value;
+                      });
+                    },
+                    decoration: InputDecoration(
+                      labelText: "Golongan Darah",
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  SizedBox(height: 16),
                   TextField(
                     controller: pekerjaanController,
                     decoration: InputDecoration(
@@ -276,85 +290,61 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ),
                   SizedBox(height: 16),
-                  // Alamat
                   TextField(
                     controller: alamatController,
                     decoration: InputDecoration(
-                      labelText: "Alamat Lengkap",
+                      labelText: "Alamat",
                       border: OutlineInputBorder(),
                     ),
                   ),
                   SizedBox(height: 16),
-                  // Kartu Keluarga (File Picker)
-                  ElevatedButton(
-                    onPressed: _pickFile,
-                    child: Text("Pilih File Kartu Keluarga"),
-                  ),
-                  if (_image != null)
-                    Text('File Terpilih: ${_image!.path.split('/').last}'),
-                  SizedBox(height: 16),
-                  // Password
                   TextField(
                     controller: passwordController,
                     obscureText: _obscurePassword,
                     decoration: InputDecoration(
                       labelText: "Password",
-                      border: OutlineInputBorder(),
                       suffixIcon: IconButton(
-                        icon: Icon(_obscurePassword
-                            ? Icons.visibility_off
-                            : Icons.visibility),
+                        icon: Icon(
+                          _obscurePassword
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                        ),
                         onPressed: () {
                           setState(() {
                             _obscurePassword = !_obscurePassword;
                           });
                         },
                       ),
+                      border: OutlineInputBorder(),
                     ),
                   ),
                   SizedBox(height: 16),
-                  // Confirm Password
                   TextField(
                     controller: confirmPasswordController,
                     obscureText: _obscureConfirmPassword,
                     decoration: InputDecoration(
                       labelText: "Konfirmasi Password",
-                      border: OutlineInputBorder(),
                       suffixIcon: IconButton(
-                        icon: Icon(_obscureConfirmPassword
-                            ? Icons.visibility_off
-                            : Icons.visibility),
+                        icon: Icon(
+                          _obscureConfirmPassword
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                        ),
                         onPressed: () {
                           setState(() {
                             _obscureConfirmPassword = !_obscureConfirmPassword;
                           });
                         },
                       ),
+                      border: OutlineInputBorder(),
                     ),
                   ),
                   SizedBox(height: 16),
-                  // Button Registrasi
-
                   ElevatedButton(
                     onPressed: register,
+                    child: Text("Daftar"),
                     style: ElevatedButton.styleFrom(
-                      minimumSize:
-                          Size(double.infinity, 50), // Tombol penuh lebar
-                      backgroundColor:
-                          Colors.blue, // Set warna latar belakang biru
-                      foregroundColor:
-                          Colors.white, // Set warna teks menjadi putih
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                            10), // Sudut tombol melengkung
-                      ),
-                    ),
-                    child: Text(
-                      "Daftar",
-                      style: TextStyle(
-                        fontWeight:
-                            FontWeight.bold, // Membuat teks menjadi bold
-                      ),
+                      padding: EdgeInsets.symmetric(vertical: 12),
                     ),
                   ),
                 ],
