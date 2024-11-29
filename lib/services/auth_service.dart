@@ -76,4 +76,9 @@ class AuthService {
       throw Exception('Terjadi kesalahan saat logout: $e');
     }
   }
+
+  Future<String?> getToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('token');
+  }
 }
