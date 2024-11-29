@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../helpers/api_helper.dart';
 import 'login_screen.dart'; // Mengimpor halaman login setelah registrasi berhasil
+import 'package:font_awesome_flutter/font_awesome_flutter.dart'; // Import FontAwesome package
 
 class RegisterScreen extends StatefulWidget {
   @override
@@ -162,6 +163,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     decoration: InputDecoration(
                       labelText: "Nama",
                       border: OutlineInputBorder(),
+                      prefixIcon: Icon(FontAwesomeIcons.user),
                     ),
                   ),
                   SizedBox(height: 16),
@@ -170,6 +172,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     decoration: InputDecoration(
                       labelText: "NIK",
                       border: OutlineInputBorder(),
+                      prefixIcon: Icon(FontAwesomeIcons.idCard),
                     ),
                   ),
                   SizedBox(height: 16),
@@ -178,6 +181,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     decoration: InputDecoration(
                       labelText: "Nomor KK",
                       border: OutlineInputBorder(),
+                      prefixIcon: Icon(FontAwesomeIcons.idCard),
                     ),
                   ),
                   SizedBox(height: 16),
@@ -197,6 +201,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     decoration: InputDecoration(
                       labelText: "Agama",
                       border: OutlineInputBorder(),
+                      prefixIcon: Icon(FontAwesomeIcons.prayingHands),
                     ),
                   ),
                   SizedBox(height: 16),
@@ -216,6 +221,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     decoration: InputDecoration(
                       labelText: "Jenis Kelamin",
                       border: OutlineInputBorder(),
+                      prefixIcon: Icon(FontAwesomeIcons.mars),
                     ),
                   ),
                   SizedBox(height: 16),
@@ -224,15 +230,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     decoration: InputDecoration(
                       labelText: "Tempat Lahir",
                       border: OutlineInputBorder(),
+                      prefixIcon: Icon(FontAwesomeIcons.mapMarkerAlt),
                     ),
                   ),
                   SizedBox(height: 16),
-                  // Date Picker for Tanggal Lahir
                   TextField(
                     controller: tanggalLahirController,
                     decoration: InputDecoration(
                       labelText: "Tanggal Lahir",
                       border: OutlineInputBorder(),
+                      prefixIcon: Icon(FontAwesomeIcons.calendarAlt),
                     ),
                     readOnly: true,
                     onTap: () async {
@@ -268,6 +275,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     decoration: InputDecoration(
                       labelText: "Status Kawin",
                       border: OutlineInputBorder(),
+                      prefixIcon: Icon(FontAwesomeIcons.heart),
                     ),
                   ),
                   SizedBox(height: 16),
@@ -287,6 +295,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     decoration: InputDecoration(
                       labelText: "Golongan Darah",
                       border: OutlineInputBorder(),
+                      prefixIcon: Icon(FontAwesomeIcons.tint),
                     ),
                   ),
                   SizedBox(height: 16),
@@ -295,6 +304,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     decoration: InputDecoration(
                       labelText: "Pekerjaan",
                       border: OutlineInputBorder(),
+                      prefixIcon: Icon(FontAwesomeIcons.briefcase),
                     ),
                   ),
                   SizedBox(height: 16),
@@ -303,6 +313,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     decoration: InputDecoration(
                       labelText: "Alamat",
                       border: OutlineInputBorder(),
+                      prefixIcon: Icon(FontAwesomeIcons.home),
                     ),
                   ),
                   SizedBox(height: 16),
@@ -311,19 +322,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     obscureText: _obscurePassword,
                     decoration: InputDecoration(
                       labelText: "Password",
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(FontAwesomeIcons.lock),
                       suffixIcon: IconButton(
-                        icon: Icon(
-                          _obscurePassword
-                              ? Icons.visibility_off
-                              : Icons.visibility,
-                        ),
+                        icon: Icon(_obscurePassword
+                            ? FontAwesomeIcons.eyeSlash
+                            : FontAwesomeIcons.eye),
                         onPressed: () {
                           setState(() {
                             _obscurePassword = !_obscurePassword;
                           });
                         },
                       ),
-                      border: OutlineInputBorder(),
                     ),
                   ),
                   SizedBox(height: 16),
@@ -331,24 +341,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     controller: confirmPasswordController,
                     obscureText: _obscureConfirmPassword,
                     decoration: InputDecoration(
-                      labelText: "Konfirmasi Password",
+                      labelText: "Confirm Password",
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(FontAwesomeIcons.lock),
                       suffixIcon: IconButton(
-                        icon: Icon(
-                          _obscureConfirmPassword
-                              ? Icons.visibility_off
-                              : Icons.visibility,
-                        ),
+                        icon: Icon(_obscureConfirmPassword
+                            ? FontAwesomeIcons.eyeSlash
+                            : FontAwesomeIcons.eye),
                         onPressed: () {
                           setState(() {
-                            _obscureConfirmPassword = !_obscureConfirmPassword;
+                            _obscureConfirmPassword =
+                                !_obscureConfirmPassword;
                           });
                         },
                       ),
-                      border: OutlineInputBorder(),
                     ),
                   ),
                   SizedBox(height: 16),
-                  ElevatedButton(
+                   ElevatedButton(
                     onPressed: register,
                     style: ElevatedButton.styleFrom(
                       minimumSize:
